@@ -3,7 +3,11 @@
 const mongoose = require("mongoose");
 
 const topic = new mongoose.Schema({
-  created_at: Date,
+  created_at: {
+    type: Date,
+    default: Date.now
+  },
+  topic_id: String,
   title: String,
   status: String,
   category: String,
@@ -17,7 +21,26 @@ const topic = new mongoose.Schema({
     percentage: Number,
     description: String
   }],
-  initiator: String,
+  initiator: {
+    id: String,
+    acronym: String
+  },
+  related_satker: [{
+    id: String,
+    acronym: String
+  }],
+  related_dirjen: [{
+    id: String,
+    acronym: String
+  }],
+  pic_bi: [{
+    id: String,
+    full_name: String
+  }],
+  pic_kemenkeu: [{
+    id: String,
+    full_name: String
+  }],
   importance: String,
   agreement: String,
   removed: {
@@ -37,7 +60,8 @@ const topic = new mongoose.Schema({
     description: String,
     file_link: String
   }],
-  edited_by: []
+  edited_by: [],
+  removed_by: []
 });
 
 const model = mongoose.model("Topic", topic);
