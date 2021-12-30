@@ -20,6 +20,8 @@ const pic = new mongoose.Schema({
   },
   salt: String,
   hash: String,
+  password_reset_hash: String,
+  password_reset_salt: String,
   phone_number: String,
   removed: {
     type: Boolean,

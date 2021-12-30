@@ -35,11 +35,13 @@ const topic = new mongoose.Schema({
   }],
   pic_bi: [{
     id: String,
-    full_name: String
+    full_name: String,
+    phone_number: String
   }],
   pic_kemenkeu: [{
     id: String,
-    full_name: String
+    full_name: String,
+    phone_number: String
   }],
   importance: String,
   agreement: String,
@@ -61,7 +63,8 @@ const topic = new mongoose.Schema({
     file_link: String
   }],
   edited_by: [],
-  removed_by: []
+  removed_by: [],
+  destroyed_by: []
 });
 
 const model = mongoose.model("Topic", topic);
