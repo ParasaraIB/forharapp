@@ -120,7 +120,7 @@ class StakeholderController {
         removed: {$ne: true},
         status: {$ne: "Done"}
       };
-      const topics = await Topic.find(topicFilter).distinct("title").lean();
+      const topics = await Topic.find(topicFilter, {title: 1}).lean();
       stakeholder.topics = topics
 
       return res.status(200).json({
