@@ -11,6 +11,4 @@ node server
 ```
 
 ## REST API Documentation
-```
-https://documenter.getpostman.com/view/12540213/UVRGFjS4
-```
+[Documentation](https://documenter.getpostman.com/view/12540213/UVRGFjS4)
