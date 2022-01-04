@@ -23,14 +23,17 @@ const topic = new mongoose.Schema({
   }],
   initiator: {
     id: String,
+    name: String,
     acronym: String
   },
   related_satker: [{
     id: String,
+    name: String,
     acronym: String
   }],
   related_dirjen: [{
     id: String,
+    name: String,
     acronym: String
   }],
   pic_bi: [{

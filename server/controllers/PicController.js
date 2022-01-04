@@ -13,9 +13,18 @@ class PicController {
       const pic = await Pic.findOne({deleted: {$ne: true}, email});
       if (!pic || !pic.validPassword(password)) return res.status(400).json({message: "Invalid email or password"});
       const access_token = pic.generateJwt();
+      const returnedInfo = {
+        pic_id: pic.pic_id, 
+        full_name: pic.full_name, 
+        username: pic.username, 
+        email: pic.email, 
+        institution: pic.institution, 
+        satker_dirjen: pic.satker_dirjen
+      };
       return res.status(200).json({
-        message: "Here's the access token",
-        access_token
+        message: "Here's the pic credentials",
+        access_token,
+        pic_info: returnedInfo
       });
     } catch (err) {
       console.error(err, "<<<< error in picLogin PicController");

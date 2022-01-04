@@ -16,6 +16,7 @@ const pic = new mongoose.Schema({
   institution: String,
   satker_dirjen: {
     id: String,
+    name: String,
     acronym: String
   },
   salt: String,
