@@ -1,13 +1,17 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 const Navbar = () => {
   const navigate = useNavigate();
+
+  const loggedInPic = jwt_decode(localStorage.getItem("access_token"));
+
   const handleLogout = (e) => {
     e.preventDefault();
     localStorage.clear();
     navigate("/");
-  } 
+  };
   return (
     <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
       <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
@@ -25,7 +29,9 @@ const Navbar = () => {
               height="30"
               className="rounded-circle"
             />
-            <span className="d-none d-sm-inline mx-1 ps-2">Template</span>
+            <span className="d-none d-sm-inline mx-1 ps-2">
+              {loggedInPic.full_name}
+            </span>
           </div>
           <div className="mt-2">
             <ul
@@ -33,14 +39,23 @@ const Navbar = () => {
               id="submenu2"
               data-bs-parent="#menu"
             >
-              <li className="w-100 mt-2" style={{ cursor: "pointer" }}>
-                <span className="d-none d-sm-inline">Item</span>
+              <li className="w-100 mt-2">
+                <span className="d-none d-sm-inline">
+                  <small>{loggedInPic.institution}</small>
+                </span>
               </li>
-              <li className="mt-2" style={{ cursor: "pointer" }}>
-                <span className="d-none d-sm-inline">Item</span>
+              <li className="mt-2">
+                <span className="d-none d-sm-inline small fs-6">
+                  <small>{loggedInPic.satker_dirjen.name}</small>
+                </span>
               </li>
-              <li className="mt-2" style={{ cursor: "pointer" }} onClick={handleLogout}>
-                <span className="d-none d-sm-inline">Logout</span>
+              <li
+                className="mt-4"
+                style={{ cursor: "pointer" }}
+                onClick={handleLogout}
+              >
+                <i className="bi bi-box-arrow-left"></i>
+                <span className="ms-2 d-none d-sm-inline">Logout</span>
               </li>
             </ul>
           </div>
@@ -60,16 +75,38 @@ const Navbar = () => {
         >
           <li className="nav-item">
             <Link to="/dashboard" className="nav-link align-middle px-0">
-              <i className="fs-4 bi-house"></i>{" "}
-              <span className="ms-1 d-none d-sm-inline text-white">
+              <i className="bi bi-microsoft" style={{ color: "white" }}></i>
+              <span className="ms-2 d-none d-sm-inline text-white">
                 Dashboard
               </span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/pic" className="nav-link align-middle px-0">
-              <i className="fs-4 bi-house"></i>{" "}
-              <span className="ms-1 d-none d-sm-inline text-white">PIC</span>
+              <i className="bi bi-building" style={{ color: "white" }}></i>
+              <span className="ms-2 d-none d-sm-inline text-white">
+                Stakeholder
+              </span>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/pic" className="nav-link align-middle px-0">
+              <i className="bi bi-person-fill" style={{ color: "white" }}></i>
+              <span className="ms-2 d-none d-sm-inline text-white">PIC</span>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/pic" className="nav-link align-middle px-0">
+              <i className="bi bi-archive-fill" style={{ color: "white" }}></i>
+              <span className="ms-2 d-none d-sm-inline text-white">
+                Archive
+              </span>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/pic" className="nav-link align-middle px-0">
+              <i className="bi bi-trash-fill" style={{ color: "white" }}></i>
+              <span className="ms-2 d-none d-sm-inline text-white">Trash</span>
             </Link>
           </li>
         </ul>

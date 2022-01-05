@@ -12,7 +12,8 @@ const initialState = {
   pics: [],
   pic: null,
   loggedInPic: null,
-  access_token: null
+  access_token: null,
+  pages: null
 };
 
 const picReducer = (state = initialState, action) => {
@@ -20,13 +21,18 @@ const picReducer = (state = initialState, action) => {
     case LOGIN_PIC: 
       return {
         ...state,
-        loggedInPic: action.payload.pic,
-        access_token: action.payload.access_token
+        access_token: action.payload
       };
     case CLEAR_TOKEN:
       return {
         ...state,
         access_token: null
+      }
+    case FETCH_PICS:
+      return {
+        ...state,
+        pics: action.payload.pics,
+        pages: action.payload.pages
       }
     default:
       return state;
