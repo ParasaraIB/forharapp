@@ -98,8 +98,18 @@ pic.methods.generateJwt = function() {
   return jwt.sign({
     _id: this._id,
     pic_id: this.pic_id,
+    full_name: this.full_name,
     username: this.username,
     email: this.email,
+    institution: this.institution,
+    satker_dirjen: this.satker_dirjen,
+    super_user: this.super_user,
+    stakeholder_access: this.stakeholder_access,
+    topic_access: this.topic_access,
+    pic_access: this.pic_access,
+    archive_access: this.archive_access,
+    trash_access: this.trash_access,
+    docs_access: this.docs_access,
     exp: parseInt(expiry.getTime()/1000)
   }, process.env.FORHAR_SECRET);
 }
