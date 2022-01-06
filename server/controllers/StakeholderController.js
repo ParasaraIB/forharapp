@@ -63,23 +63,100 @@ class StakeholderController {
 
       const {page = 0, search = ""} = req.query;
       const dataLimit = 10;
-      const filter = {removed: {$ne: true}};
+      // const filter = {removed: {$ne: true}};
+      const aggregateFilter = [
+        {$match: {removed: {$ne: true}}},
+        {$addFields: {stakeholderId: {$toString: "$_id" }}},
+        {$lookup: {
+          from: "topics",
+          localField: "stakeholderId",
+          foreignField: "initiator.id",
+          as: "topic_initiator"
+        }},
+        {
+          $unwind: {
+            path: "$topic_initiator",
+            preserveNullAndEmptyArrays : true
+          }
+        },
+        {$match: {"topic_initiator.removed": {$ne: true}, "topic_initiator.archived": {$ne: true}}},
+        {$lookup: {
+          from: "topics",
+          localField: "stakeholderId",
+          foreignField: "related_satker.id",
+          as: "topic_satker"
+        }},
+        {
+          $unwind: {
+            path: "$topic_satker",
+            preserveNullAndEmptyArrays : true
+          }
+        },
+        {$match: {"topic_satker.removed": {$ne: true}, "topic_satker.archived": {$ne: true}}},
+        {$lookup: {
+          from: "topics",
+          localField: "stakeholderId",
+          foreignField: "related_dirjen.id",
+          as: "topic_dirjen"
+        }},
+        {
+          $unwind: {
+            path: "$topic_dirjen",
+            preserveNullAndEmptyArrays : true
+          }
+        },
+        {$match: {"topic_dirjen.removed": {$ne: true}, "topic_dirjen.archived": {$ne: true}}},
+        {
+          $project: {
+            _id: "$_id",
+            name: "$name",
+            acronym: "$acronym",
+            institution: "$institution",
+            initiator_involvement: {$cond: ["$topic_initiator", 1, 0]},
+            satker_involvement: {$cond: ["$topic_satker", 1, 0]},
+            dirjen_involvement: {$cond: ["$topic_dirjen", 1, 0]}
+          }
+        },
+        {
+          $group: {
+            _id: "$_id",
+            name: {$last: "$name"},
+            acronym: {$last: "$acronym"},
+            institution: {$last: "$institution"},
+            involvement: {$sum: {$add: ["$initiator_involvement", "$satker_involvement", "$dirjen_involvement"]}}
+          }
+        },
+        {
+          $sort: {
+            _id: 1
+          }
+        }
+      ];
 
       if (search) {
         const reg = new RegExp(search, "i");
-        filter.$or = [
+        // filter.$or = [
+        //   {name: reg},
+        //   {acronym: reg}
+        // ];
+        aggregateFilter[0].$match.$or = [
           {name: reg},
           {acronym: reg}
         ];
       }
 
       const promiseAll = await Promise.all([
-        Stakeholder.find(filter).sort("-_id").skip(dataLimit * page).limit(dataLimit).lean(),
-        Stakeholder.countDocuments(filter)
+        // Stakeholder.find(filter).sort("-_id").skip(dataLimit * page).limit(dataLimit).lean(),
+        // Stakeholder.countDocuments(filter),
+        Stakeholder.aggregate(aggregateFilter).skip(dataLimit * page).limit(dataLimit)
       ]);
 
+      // const stakeholders = promiseAll[0];
+      // const count = promiseAll[1];
+      // const pages = Math.ceil(count / dataLimit);
+
       const stakeholders = promiseAll[0];
-      const count = promiseAll[1];
+      const count = stakeholders.length;
       const pages = Math.ceil(count / dataLimit);
 
       return res.status(200).json({

@@ -7,7 +7,6 @@ async function authentication(req, res, next) {
   try {
     const {access_token} = req.headers;
     const picData = jwt.verify(access_token, process.env.FORHAR_SECRET);
-    console.log(picData, "<<<< this is picData");
 
     const pic = await Pic.findOne({email: picData.email});
     if (pic) {
