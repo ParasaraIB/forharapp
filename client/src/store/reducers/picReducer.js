@@ -13,10 +13,10 @@ const initialState = {
   pic: null,
   loggedInPic: null,
   access_token: null,
-  pages: null
+  pages: 0
 };
 
-const picReducer = (state = initialState, action) => {
+const picReducer = (state=initialState, action) => {
   switch(action.type) {
     case LOGIN_PIC: 
       return {

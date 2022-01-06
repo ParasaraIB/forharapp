@@ -75,17 +75,26 @@ const Navbar = () => {
         >
           <li className="nav-item">
             <Link to="/dashboard" className="nav-link align-middle px-0">
-              <i className="bi bi-microsoft" style={{ color: "white" }}></i>
+
+              <i className="bi bi-columns-gap" style={{ color: "white" }}></i>
               <span className="ms-2 d-none d-sm-inline text-white">
                 Dashboard
               </span>
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/pic" className="nav-link align-middle px-0">
+            <Link to="/stakeholder" className="nav-link align-middle px-0">
               <i className="bi bi-building" style={{ color: "white" }}></i>
               <span className="ms-2 d-none d-sm-inline text-white">
                 Stakeholder
+              </span>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/topic" className="nav-link align-middle px-0">
+              <i className="bi bi-file-earmark-font" style={{ color: "white" }}></i>
+              <span className="ms-2 d-none d-sm-inline text-white">
+                Topic
               </span>
             </Link>
           </li>

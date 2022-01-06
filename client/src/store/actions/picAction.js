@@ -1,4 +1,7 @@
+import Swal from "sweetalert2";
+
 import {
+  API_URL,
   LOGIN_PIC,
   FETCH_PICS,
   ADD_PIC,
@@ -8,25 +11,32 @@ import {
   CLEAR_TOKEN
 } from "../actionTypes";
 
-const apiUrl = "http://localhost:3000"; 
-
 export const loginPic = (data) => {
   return (dispatch, getState) => {
-    fetch(`${apiUrl}/pic/picLogin`, {
+    fetch(`${API_URL}/pic/picLogin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(data)
     })
-      .then(res => res.json())
-      .then((data) => {
+      .then(res => {
+        if (res.status === 400) {
+          Swal.fire({
+            icon: "warning",
+            title: "Authentication failed",
+            text: "Invalid email or password",
+          });
+        }
+        return res.json()
+      })
+      .then(data => {
         dispatch({
           type: LOGIN_PIC,
           payload: data.access_token
         });
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err, "<<<< loginPic");
       });
   }
@@ -38,9 +48,9 @@ export const clearToken = () => {
   }
 }
 
-export const fetchPics = (data) => {
+export const fetchPics = (page) => {
   return (dispatch, getState) => {
-    fetch(`${apiUrl}/pic/picList`, {
+    fetch(`${API_URL}/pic/picList?page=${page}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -48,14 +58,14 @@ export const fetchPics = (data) => {
       }
     })
       .then(res => res.json())
-      .then((data) => {
+      .then(data => {
         dispatch({
           type: FETCH_PICS,
           payload: data
         });
       })
       .catch(err => {
-        console.error(err, "<<<< fetchPics")
+        console.error(err, "<<<< fetchPics");
       })
   }
 }

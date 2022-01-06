@@ -12,6 +12,8 @@ import store from "./store";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Pic from "./pages/Pic";
+import Stakeholder from "./pages/Stakeholder";
+import Topic from "./pages/Topic";
 
 function App() {
   return (
@@ -28,7 +30,30 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            <Route path="/pic" element={<Pic />} />
+            <Route 
+              path="/pic" 
+              element={
+                <ProtectedRoute redirectTo="/">
+                  <Pic />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/stakeholder" 
+              element={
+                <ProtectedRoute redirectTo="/">
+                  <Stakeholder />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/topic" 
+              element={
+                <ProtectedRoute redirectTo="/">
+                  <Topic />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </div>
       </Router>

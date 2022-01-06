@@ -9,8 +9,8 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("johndoe@forhar.id");
+  const [password, setPassword] = useState("12345");
 
   const inputEmail = (e) => {
     setEmail(e.target.value);
@@ -46,6 +46,13 @@ const Login = () => {
       localStorage.setItem("access_token", access_token);
       dispatch(clearToken());
       navigate("/dashboard")
+      Swal.fire({
+        icon: "info",
+        iconColor: "#A5DC86",
+        title: "Welcome back!",
+        showConfirmButton: false,
+        timer: 1500
+      });
     }
   }, [access_token, dispatch, navigate]);
 

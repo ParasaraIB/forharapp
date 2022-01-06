@@ -7,7 +7,11 @@ const Dashboard = () => {
     <div className="container-fluid">
       <div className="row flex-nowrap">
         <Navbar />
-        <div className="col py-3">Dashboard</div>
+        <div className="col py-3">
+          <div className="container">
+            <h5>DASHBOARD</h5>
+          </div>
+        </div>
       </div>
     </div>
   );

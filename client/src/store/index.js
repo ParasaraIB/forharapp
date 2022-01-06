@@ -7,9 +7,13 @@ import {
 import thunk from "redux-thunk";
 
 import picReducer from "./reducers/picReducer";
+import stakeholderReducer from "./reducers/stakeholderReducer";
+import topicReducer from "./reducers/topicReducer";
 
 const reducers = combineReducers({
-  picReducer
+  picReducer,
+  stakeholderReducer,
+  topicReducer
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
