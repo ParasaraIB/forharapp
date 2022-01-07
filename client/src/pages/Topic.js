@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Footer from "../components/Footer";
 
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
@@ -72,6 +73,7 @@ const Topic = () => {
             </div>
           </div>
           <Pagination onPaginationClick={getCurrentPage} pages={pages} />
+          <Footer />
         </div>
       </div>
     </div>

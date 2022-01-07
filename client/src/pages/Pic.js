@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
+import Footer from "../components/Footer";
 import { fetchPics } from "../store/actions/picAction";
 
 const Pic = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -15,6 +18,10 @@ const Pic = () => {
 
   const getCurrentPage = (page = 0) => {
     setCurrentPage(page);
+  }
+
+  const handleAddPic = (e) => {
+    navigation("add");
   }
 
   useEffect(() => {
@@ -30,7 +37,7 @@ const Pic = () => {
             <h5>PIC</h5>
             <div className="row mt-3">
               <div className="col d-flex justify-content-end">
-                <button type="button" className="btn btn-sm btn-warning">
+                <button type="button" className="btn btn-sm btn-warning" onClick={handleAddPic}>
                   <strong>+ Add PIC</strong>
                 </button>
               </div>
@@ -61,6 +68,7 @@ const Pic = () => {
             </div>
           </div>
           <Pagination onPaginationClick={getCurrentPage} pages={pages} />
+          <Footer />
         </div>
       </div>
     </div>

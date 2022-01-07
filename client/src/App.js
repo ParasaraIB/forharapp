@@ -6,7 +6,6 @@ import {
   Navigate
 } from "react-router-dom";
 import {Provider} from "react-redux";
-import jwt_decode from "jwt-decode";
 
 import store from "./store";
 import Login from "./pages/Login";
@@ -14,6 +13,8 @@ import Dashboard from "./pages/Dashboard";
 import Pic from "./pages/Pic";
 import Stakeholder from "./pages/Stakeholder";
 import Topic from "./pages/Topic";
+import About from "./pages/About";
+import AddPic from "./pages/AddPic";
 
 function App() {
   return (
@@ -21,9 +22,18 @@ function App() {
       <Router>
         <div className="App">
           <Routes>
-            <Route exact path="/" element={<Login />} />
+            <Route path="*" element={<About />} />
+            <Route
+              path="/" 
+              element={
+                <LoginChecker redirectTo={"/dashboard"}>
+                  <Login />
+                </LoginChecker>
+              } 
+            />
+            <Route path="about" element={<About />} />
             <Route 
-              path="/dashboard" 
+              path="dashboard" 
               element={
                 <ProtectedRoute redirectTo="/">
                   <Dashboard />
@@ -31,15 +41,17 @@ function App() {
               } 
             />
             <Route 
-              path="/pic" 
+              path="pic" 
               element={
                 <ProtectedRoute redirectTo="/">
                   <Pic />
                 </ProtectedRoute>
               } 
             />
+            {/* <Route path="pic/:id" element={} /> */}
+            <Route path="pic/add" element={<AddPic />} />
             <Route 
-              path="/stakeholder" 
+              path="stakeholder" 
               element={
                 <ProtectedRoute redirectTo="/">
                   <Stakeholder />
@@ -47,7 +59,7 @@ function App() {
               } 
             />
             <Route 
-              path="/topic" 
+              path="topic" 
               element={
                 <ProtectedRoute redirectTo="/">
                   <Topic />
@@ -63,8 +75,12 @@ function App() {
 
 function ProtectedRoute({children, redirectTo}) {
   const isAuthenticated = localStorage.getItem("access_token");
-  jwt_decode(isAuthenticated);
   return isAuthenticated ? children : <Navigate to={redirectTo} />; 
+}
+
+function LoginChecker({children, redirectTo}) {
+  const isAuthenticated = localStorage.getItem("access_token");
+  return isAuthenticated ? <Navigate to={redirectTo} /> : children; 
 }
 
 export default App;
