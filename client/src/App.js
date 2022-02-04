@@ -15,6 +15,11 @@ import Stakeholder from "./pages/Stakeholder";
 import Topic from "./pages/Topic";
 import About from "./pages/About";
 import AddPic from "./pages/AddPic";
+import AddStakeholder from "./pages/AddStakeholder";
+import EditPic from "./pages/EditPic";
+import EditStakeholder from "./pages/EditStakeholder";
+import EditTopic from "./pages/EditTopic";
+import AddTopic from "./pages/AddTopic";
 
 function App() {
   return (
@@ -48,7 +53,7 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            {/* <Route path="pic/:id" element={} /> */}
+            <Route path="pic/:id" element={<EditPic />} />
             <Route path="pic/add" element={<AddPic />} />
             <Route 
               path="stakeholder" 
@@ -58,6 +63,8 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+            <Route path="stakeholder/:id" element={<EditStakeholder />} />
+            <Route path="stakeholder/add" element={<AddStakeholder />} />
             <Route 
               path="topic" 
               element={
@@ -66,6 +73,8 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+            <Route path="topic/:id" element={<EditTopic />} />
+            <Route path="topic/add" element={<AddTopic />} />
           </Routes>
         </div>
       </Router>

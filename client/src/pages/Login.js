@@ -51,6 +51,7 @@ const Login = () => {
         icon: "info",
         iconColor: "#A5DC86",
         title: "Welcome back!",
+        html: '<i>DPPT Greater and More Significant!</i>',
         showConfirmButton: false,
         timer: 1500
       });
@@ -58,41 +59,45 @@ const Login = () => {
   }, [access_token, dispatch, navigate]);
 
   return (
-    <div className="container d-flex align-items-center min-vh-100">
-      <div className="card mx-auto" style={{ width: "25rem" }}>
-        <form onSubmit={handleSubmit}>
-          <div className="m-3 row">
-            <div className="col">
-              <label className="form-label">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                value={email}
-                onChange={inputEmail}
-              />
+    <div>
+      <div className="container d-flex align-items-center min-vh-100">
+        <div className="card mx-auto" style={{ width: "25rem" }}>
+          <form onSubmit={handleSubmit}>
+            <div className="m-3 row">
+              <div className="col">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  value={email}
+                  onChange={inputEmail}
+                />
+              </div>
             </div>
-          </div>
-          <div className="m-3 row">
-            <div className="col">
-              <label className="form-label">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                value={password}
-                onChange={inputPassword}
-              />
+            <div className="m-3 row">
+              <div className="col">
+                <label className="form-label">Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={password}
+                  onChange={inputPassword}
+                />
+              </div>
             </div>
-          </div>
-          <div className="m-3 row">
-            <div className="col d-flex justify-content-end">
-              <button type="submit" className="btn btn-dark">
-                Login
-              </button>
+            <div className="m-3 row">
+              <div className="col d-flex justify-content-end">
+                <button type="submit" className="btn btn-dark">
+                  Login
+                </button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-      <Footer />
+      <div className="fixed-bottom">
+        <Footer />
+      </div>
     </div>
   );
 };

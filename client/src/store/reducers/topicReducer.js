@@ -3,7 +3,7 @@ import {
   ADD_TOPIC,
   FETCH_TOPIC,
   EDIT_TOPIC,
-  DELETE_TOPIC
+  REMOVE_TOPIC
 } from "../actionTypes";
 
 const initialState = {
@@ -19,6 +19,11 @@ const topicReducer = (state=initialState, action) => {
         ...state,
         topics: action.payload.topics,
         pages: action.payload.pages
+      }
+    case FETCH_TOPIC:
+      return {
+        ...state,
+        topic: action.payload.topic
       }
     default:
       return state;

@@ -3,7 +3,7 @@ import {
   ADD_STAKEHOLDER,
   FETCH_STAKEHOLDER,
   EDIT_STAKEHOLDER,
-  DELETE_STAKEHOLDER
+  REMOVE_PIC
 } from "../actionTypes";
 
 const initialState = {
@@ -19,6 +19,16 @@ const stakeholderReducer = (state=initialState, action) => {
         ...state,
         stakeholders: action.payload.stakeholders,
         pages: action.payload.pages
+      };
+    case ADD_STAKEHOLDER:
+      return {
+        ...state,
+        stakeholders: state.stakeholders.concat(action.payload.newStakeholder)
+      };
+    case FETCH_STAKEHOLDER:
+      return {
+        ...state,
+        stakeholder: action.payload.stakeholder
       }
     default:
       return state;

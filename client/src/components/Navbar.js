@@ -105,7 +105,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/pic" className="nav-link align-middle px-0">
+            <Link to="/topic" className="nav-link align-middle px-0">
               <i className="bi bi-archive-fill" style={{ color: "white" }}></i>
               <span className="ms-2 d-none d-sm-inline text-white">
                 Archive
@@ -113,7 +113,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/pic" className="nav-link align-middle px-0">
+            <Link to="/topic" className="nav-link align-middle px-0">
               <i className="bi bi-trash-fill" style={{ color: "white" }}></i>
               <span className="ms-2 d-none d-sm-inline text-white">Trash</span>
             </Link>

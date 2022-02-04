@@ -9,8 +9,7 @@ const {
 class TopicController {
   static async addTopic (req, res, next) {
     try {
-      console.log("masuk")
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         email: req.payload.email, 
         removed: {$ne: true},
         $or: [
@@ -19,7 +18,7 @@ class TopicController {
         ]
       }).lean();
       
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
       
       const {
         title,
@@ -98,7 +97,7 @@ class TopicController {
 
   static async topicList (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         email: req.payload.email, 
         removed: {$ne: true},
         $or: [
@@ -107,7 +106,7 @@ class TopicController {
         ]
       }).lean();
       
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
       const {page = 0, search = "", status, importance, satker_dirjen, from_date, to_date} = req.query;
       const dataLimit = 10;
@@ -152,7 +151,7 @@ class TopicController {
 
   static async topicDetail (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         email: req.payload.email, 
         removed: {$ne: true},
         $or: [
@@ -161,7 +160,7 @@ class TopicController {
         ]
       }).lean();
       
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
       const {id} = req.query;
 
@@ -180,7 +179,7 @@ class TopicController {
 
   static async editTopic (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         email: req.payload.email, 
         removed: {$ne: true},
         $or: [
@@ -189,7 +188,7 @@ class TopicController {
         ]
       }).lean();
       
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
       const {
         _id,
@@ -251,8 +250,8 @@ class TopicController {
       topic.outputs = outputs;
       topic.edited_by.push(
         {
-          pic_id: checkPic.pic_id,
-          email: checkPic.email,
+          pic_id: picAuth.pic_id,
+          email: picAuth.email,
           edited_at: currentDate
         }
       );
@@ -271,7 +270,7 @@ class TopicController {
 
   static async removeTopic (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         email: req.payload.email, 
         removed: {$ne: true},
         $or: [
@@ -280,7 +279,7 @@ class TopicController {
         ]
       }).lean();
       
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
       const {_id} = req.body;
       const currentDate = new Date();
@@ -291,12 +290,13 @@ class TopicController {
           $set: {removed: true},
           $push: {
             removed_by: {
-              pic_id: checkPic.pic_id,
-              email: checkPic.email,
+              pic_id: picAuth.pic_id,
+              email: picAuth.email,
               removed_at: currentDate
             }
           }
-        }
+        },
+        {new: true}
       ).lean();
       if (!topic) return res.status(404).json({message: "Topic not found or already removed"});
 

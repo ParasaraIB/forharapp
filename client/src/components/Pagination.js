@@ -2,7 +2,7 @@ import React from "react";
 import ReactPaginate from "react-paginate";
 
 const Pagination = (props) => {
-
+  console.log("pagi")
   const handlePageClick = (data) => props.onPaginationClick(data.selected);
 
   return (

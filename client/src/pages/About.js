@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
 
 const About = () => {
   const navigate = useNavigate();
@@ -21,11 +20,11 @@ const About = () => {
       </div>
       <div className="row">
         <div className="col-6">
-          <h4 className="mt-2">Full-Stuck Philosophy</h4>
-          <p>Full-Stuck was initially invented when the author have to face the truthful reality that he, himself, just got stuck so many times by the obstacles in becoming a full-stack developer. Never waver, he pushes himself harder to break all the obstacles.</p>
+          <h4 className="mt-2">Filosofi Anak Magang</h4>
+          <p><i>"DPPT Greater and More Significant"</i></p>
+          <a href="https://www.linkedin.com/in/gusraja21/" target="_blank" rel="noreferrer"><h3><i className="bi bi-linkedin"></i></h3></a>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

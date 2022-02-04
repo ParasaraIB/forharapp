@@ -9,7 +9,7 @@ const {
 class StakeholderController {
   static async addStakeholder (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         pic_id: req.payload.pic_id, 
         removed: {$ne: true},
         $or: [
@@ -18,7 +18,7 @@ class StakeholderController {
         ]
       }).lean();
 
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
       const {
         name,
@@ -32,15 +32,19 @@ class StakeholderController {
         !institution
       ) return res.status(400).json({message: "Incomplete input"});
 
+      const checkStakeholder = await Stakeholder.findOne({institution, $or: [{name}, {acronym}]}).lean();
+      if (checkStakeholder) return res.status(400).json({message: "Stakeholder has already been registered"});
       const newStakeholder = new Stakeholder();
       newStakeholder.name = name;
       newStakeholder.acronym = acronym;
       newStakeholder.institution = institution;
       await newStakeholder.save();
 
+      const returnedData = newStakeholder.toObject();
+      returnedData.involvement = 0;
       return res.status(201).json({
         message: "Stakeholder successfully added",
-        newStakeholder
+        newStakeholder: returnedData
       });
     } catch (err) {
       console.error(err, "<<<< error in addStakeholder StakeholderController");
@@ -50,7 +54,7 @@ class StakeholderController {
 
   static async stakeholderList (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         pic_id: req.payload.pic_id, 
         removed: {$ne: true},
         $or: [
@@ -59,11 +63,10 @@ class StakeholderController {
         ]
       }).lean();
 
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
       const {page = 0, search = ""} = req.query;
       const dataLimit = 10;
-      // const filter = {removed: {$ne: true}};
       const aggregateFilter = [
         {$match: {removed: {$ne: true}}},
         {$addFields: {stakeholderId: {$toString: "$_id" }}},
@@ -135,10 +138,6 @@ class StakeholderController {
 
       if (search) {
         const reg = new RegExp(search, "i");
-        // filter.$or = [
-        //   {name: reg},
-        //   {acronym: reg}
-        // ];
         aggregateFilter[0].$match.$or = [
           {name: reg},
           {acronym: reg}
@@ -146,14 +145,8 @@ class StakeholderController {
       }
 
       const promiseAll = await Promise.all([
-        // Stakeholder.find(filter).sort("-_id").skip(dataLimit * page).limit(dataLimit).lean(),
-        // Stakeholder.countDocuments(filter),
         Stakeholder.aggregate(aggregateFilter).skip(dataLimit * page).limit(dataLimit)
       ]);
-
-      // const stakeholders = promiseAll[0];
-      // const count = promiseAll[1];
-      // const pages = Math.ceil(count / dataLimit);
 
       const stakeholders = promiseAll[0];
       const count = stakeholders.length;
@@ -172,7 +165,7 @@ class StakeholderController {
 
   static async stakeholderDetail (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         pic_id: req.payload.pic_id,
         removed: {$ne: true},
         $or: [
@@ -181,7 +174,7 @@ class StakeholderController {
         ]
       }).lean();
 
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
       const {id} = req.query;
 
@@ -212,7 +205,7 @@ class StakeholderController {
 
   static async editStakeholder (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         pic_id: req.payload.pic_id,
         removed: {$ne: true},
         $or: [
@@ -221,7 +214,7 @@ class StakeholderController {
         ]
       }).lean();
 
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
       const {
         _id,
@@ -246,8 +239,8 @@ class StakeholderController {
       stakeholder.institution = institution;
       stakeholder.edited_by.push(
         {
-          pic_id: checkPic.pic_id,
-          email: checkPic.email,
+          pic_id: picAuth.pic_id,
+          email: picAuth.email,
           edited_at: currentDate
         }
       );
@@ -285,7 +278,7 @@ class StakeholderController {
 
   static async removeStakeholder (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         pic_id: req.payload.pic_id,
         removed: {$ne: true},
         $or: [
@@ -294,7 +287,7 @@ class StakeholderController {
         ]
       }).lean();
 
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
       const {_id} = req.body;
       const currentDate = new Date();
@@ -305,17 +298,19 @@ class StakeholderController {
           $set: {removed: true},
           $push: {
             removed_by: {
-              pic_id: checkPic.pic_id,
-              email: checkPic.email,
+              pic_id: picAuth.pic_id,
+              email: picAuth.email,
               removed_at: currentDate
             }
           }
-        }
+        },
+        {new: true}
       ).lean();
       if (!stakeholder) return res.status(404).json({message: "Stakeholder not found or already removed"});
 
       return res.status(200).json({
-        message: "Stakeholder removed successfully"
+        message: "Stakeholder removed successfully",
+        stakeholder
       });
     } catch (err) {
       console.error(err, "<<<< error in removeStakeholder StakeholderController");
@@ -325,7 +320,7 @@ class StakeholderController {
 
   static async getStakeholders (req, res, next) {
     try {
-      const checkPic = await Pic.findOne({
+      const picAuth = await Pic.findOne({
         pic_id: req.payload.pic_id,
         removed: {$ne: true},
         $or: [
@@ -334,9 +329,26 @@ class StakeholderController {
         ]
       }).lean();
 
-      if (!checkPic) return res.status(403).json({message: "Forbidden"});
+      if (!picAuth) return res.status(403).json({message: "Forbidden"});
 
-      const stakeholders = await Stakeholder.find().distinct("acronym").lean();
+      const {search = ""} = req.query;
+      const filter = {
+        $match: {removed: {$ne: true}}
+      };
+      if (search) {
+        const reg = new RegExp(search, "i");
+        filter.$match.institution = reg;
+      }
+      const stakeholders = await Stakeholder.aggregate([
+        filter,
+        {
+          $project: {
+            id: "$_id",
+            name: "$name",
+            acronym: "$acronym"
+          }
+        }
+      ]);
       
       return res.status(200).json({
         message: "Here' the list of stakeholders",

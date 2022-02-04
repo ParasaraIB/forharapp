@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
+import { style } from "glamor";
 
 import Navbar from "../components/Navbar";
 import Pagination from "../components/Pagination";
@@ -8,6 +10,8 @@ import { fetchStakeholders } from "../store/actions/stakeholderAction";
 
 const Stakeholder = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const hoverStyle = {backgroundColor: "#ffffff", height: "30px", width: "100%", padding: "6px", fontsize: "16px", transition: "all ease .5s", ":hover": {cursor: "pointer", backgroundColor: "#E0E0E0", color: "#000000" }};
 
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -16,6 +20,14 @@ const Stakeholder = () => {
 
   const getCurrentPage = (page=0) => {
     setCurrentPage(page);
+  }
+
+  const handleAddStakeholder = (e) => {
+    navigate("/stakeholder/add");
+  }
+
+  const handleDetail = (e, stakeholderId) => {
+    navigate(`${stakeholderId}`);
   }
 
   useEffect(() => {
@@ -31,7 +43,7 @@ const Stakeholder = () => {
             <h5>STAKEHOLDER</h5>
             <div className="row mt-3">
               <div className="col d-flex justify-content-end">
-                <button type="button" className="btn btn-sm btn-warning">
+                <button type="button" className="btn btn-sm btn-warning" onClick={handleAddStakeholder}>
                   <strong>+ Add Stakeholder</strong>
                 </button>
               </div>
@@ -49,7 +61,7 @@ const Stakeholder = () => {
                 <tbody>
                   {stakeholders.map(stakeholder => {
                     return (
-                      <tr key={stakeholder._id}>
+                      <tr key={stakeholder._id} {...style(hoverStyle)} onClick={(e) => handleDetail (e, stakeholder._id)}>
                         <td>{stakeholder.name}</td>
                         <td>{stakeholder.acronym}</td>
                         <td>{stakeholder.institution}</td>

@@ -1,3 +1,4 @@
+import axios from "axios";
 import Swal from "sweetalert2";
 
 import {
@@ -7,37 +8,26 @@ import {
   ADD_PIC,
   FETCH_PIC,
   EDIT_PIC,
-  DELETE_PIC,
-  CLEAR_TOKEN
+  REMOVE_PIC,
+  CLEAR_TOKEN,
+  SET_PAGE
 } from "../actionTypes";
 
 export const loginPic = (data) => {
   return (dispatch, getState) => {
-    fetch(`${API_URL}/pic/picLogin`, {
+    axios({
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+      url: `${API_URL}/pic/picLogin`,
+      data
     })
-      .then(res => {
-        if (res.status === 400) {
-          Swal.fire({
-            icon: "warning",
-            title: "Authentication failed",
-            text: "Invalid email or password",
-          });
-        }
-        return res.json()
-      })
-      .then(data => {
+      .then(({data}) => {
         dispatch({
           type: LOGIN_PIC,
           payload: data.access_token
         });
       })
       .catch(err => {
-        console.error(err, "<<<< loginPic");
+        console.error(err.response, "<<<< loginPic picAction");
       });
   }
 }
@@ -48,24 +38,143 @@ export const clearToken = () => {
   }
 }
 
-export const fetchPics = (page) => {
+export const fetchPics = (qParams) => {
   return (dispatch, getState) => {
-    fetch(`${API_URL}/pic/picList?page=${page}`, {
+    const {
+      page=0, 
+      search="", 
+      satker_dirjen="", 
+      sorter=""
+    } = qParams;
+    axios({
       method: "GET",
+      url: `${API_URL}/pic/picList?page=${page}&search=${search}&satker_dirjen=${satker_dirjen}&sorter=${sorter}`,
       headers: {
-        "Content-Type": "application/json",
-        "access_token": localStorage.getItem("access_token")
+        access_token: localStorage.getItem("access_token")
       }
     })
-      .then(res => res.json())
-      .then(data => {
+      .then(({data}) => {
         dispatch({
           type: FETCH_PICS,
           payload: data
         });
       })
       .catch(err => {
-        console.error(err, "<<<< fetchPics");
+        console.error(err.response, "<<<< fetchPics picAction");
+      });
+  }
+}
+
+export const addPic = (data, navigate) => {
+  return (dispatch, getState) => {
+    axios({
+      method: "POST",
+      url: `${API_URL}/pic/addPic`,
+      headers: {
+        access_token: localStorage.getItem("access_token")
+      },
+      data
+    })
+      .then(({data}) => {
+        dispatch({
+          type: ADD_PIC,
+          payload: data
+        });
+        navigate("/pic");
       })
+      .catch(err => {
+        console.error(err.response, "<<<< addPic picAction");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: err.response.data.message
+        });
+      })
+  }
+}
+
+export const fetchPic = (id) => {
+  return (dispatch, getState) => {
+    axios({
+      method: "GET",
+      url: `${API_URL}/pic/picDetail?id=${id}`,
+      headers: {
+        access_token: localStorage.getItem("access_token")
+      }
+    })
+      .then(({data}) => {
+        dispatch({
+          type: FETCH_PIC,
+          payload: data
+        });
+      })
+      .catch(err => {
+        console.error(err.response, "<<<< fetchPic picAction");
+      })
+  }
+}
+
+export const editPic = (data, navigate) => {
+  return (dispatch, getState) => {
+    axios({
+      method: "PUT",
+      url: `${API_URL}/pic/editPic`,
+      headers: {
+        access_token: localStorage.getItem("access_token")
+      },
+      data
+    })
+      .then(({data}) => {
+        dispatch({
+          type: EDIT_PIC,
+          payload: data
+        });
+        navigate("/pic");
+      })
+      .catch(err => {
+        console.error(err.response, "<<<< editPic picAction");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: err.response.data.message
+        });
+      })
+  }
+}
+
+export const removePic = (_id, navigate) => {
+  return (dispatch, getState) => {
+    axios({
+      method: "DELETE",
+      url: `${API_URL}/pic/removePic`,
+      headers: {
+        access_token: localStorage.getItem("access_token")
+      },
+      data: {
+        _id
+      }
+    })
+      .then(({data}) => {
+        dispatch({
+          type: REMOVE_PIC,
+          payload: data
+        });
+        navigate("/pic");
+      })
+      .catch(err => {
+        console.error(err.response, "<<<< removePic picAction");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: err.response.data.message
+        });
+      })
+  }
+}
+
+export const setPage = (page) => {
+  return {
+    type: SET_PAGE,
+    page
   }
 }

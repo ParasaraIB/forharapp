@@ -1,5 +1,7 @@
+import { style } from "glamor";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 
 import Navbar from "../components/Navbar";
@@ -7,7 +9,9 @@ import Pagination from "../components/Pagination";
 import { fetchTopics } from "../store/actions/topicAction";
 
 const Topic = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const hoverStyle = {backgroundColor: "#ffffff", height: "30px", width: "100%", padding: "6px", fontsize: "16px", transition: "all ease .5s", ":hover": {cursor: "pointer", backgroundColor: "#E0E0E0", color: "#000000" }};
 
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -17,6 +21,14 @@ const Topic = () => {
   const getCurrentPage = (page = 0) => {
     setCurrentPage(page);
   };
+
+  const handleAddTopic = (e) => {
+    navigate("add");
+  }
+
+  const handleDetail = (e, topicId) => {
+    navigate(`${topicId}`);
+  }
 
   useEffect(() => {
     dispatch(fetchTopics(currentPage));
@@ -31,7 +43,7 @@ const Topic = () => {
             <h5>TOPIC</h5>
             <div className="row mt-3">
               <div className="col d-flex justify-content-end">
-                <button type="button" className="btn btn-sm btn-warning">
+                <button type="button" className="btn btn-sm btn-warning" onClick={handleAddTopic}>
                   <strong>+ Add Topic</strong>
                 </button>
               </div>
@@ -50,7 +62,7 @@ const Topic = () => {
                 <tbody>
                   {topics.map((topic) => {
                     return (
-                      <tr key={topic._id}>
+                      <tr key={topic._id} {...style(hoverStyle)} onClick={(e) => handleDetail (e, topic._id)}>
                         <td>{topic.title}</td>
                         <td>{topic.status}</td>
                         <td>{topic.category}</td>
