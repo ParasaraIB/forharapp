@@ -1,5 +1,5 @@
 // API URL
-export const API_URL = "http://localhost:3000";
+export const API_URL = "https://forhar-app.herokuapp.com";
 
 // PIC
 export const LOGIN_PIC = "LOGIN_PIC";
